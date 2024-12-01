@@ -6,6 +6,12 @@ import java.util.Arrays;
 
 public class Answer {
 
+    /**
+     * 1. 랜덤 숫자 생성
+     * 2. 중복 검사
+     * 3. 정답 여부 확인
+     * 4. 출력
+     */
     private int[] answerArr = new int[3];
 
     private int createRandomOneDigit() {
@@ -35,19 +41,49 @@ public class Answer {
         return answerArr;
     }
 
-    private void compareAnswerCorrect() {
-        Player player = new Player();
-        int[] inputNumbers = player.inputNumber();
-
-        for (int i = 0; i < answerArr.length ; i++) {
-            int answerNum = answerArr[i];
-            for (int j = 0; j < inputNumbers.length; j++) {
-                int inputNum = inputNumbers[j];
-            }
+    public void compareAnswerCorrect(int[] answerArr, int[] playerInputNumber) {
+        int[] ballCount = new int[2];
+        for (int i = 0; i < answerArr.length; i++) {
+            ballCount = isStrikeOrBall(answerArr[i], i, playerInputNumber, ballCount);
         }
+
+        printBallCount(ballCount);
     }
 
-    private String printCompareAnswer() {
+    private int[] isStrikeOrBall(int answerNum, int index, int[] playerInputNumbers , int[] ballCount) {
+        int strikes = ballCount[0];
+        int balls = ballCount[1];
+        for (int j = 0; j < playerInputNumbers.length; j++) {
+            if (answerNum == playerInputNumbers[j] && index == j) {
+                strikes++;
+            }
 
+            if (answerNum == playerInputNumbers[j] && index != j) {
+                balls++;
+            }
+        }
+
+        return new int[]{strikes, balls};
+    }
+
+    private void printBallCount(int[] ballCount) {
+        int strikes = ballCount[0];
+        int balls = ballCount[1];
+
+        if (strikes > 0 && balls == 0) {
+            System.out.println(strikes + "스트라이크");
+        }
+
+        if (strikes == 0 && balls > 0) {
+            System.out.println(balls + "볼");
+        }
+
+        if (strikes > 0 && balls > 0) {
+            System.out.println(strikes + "스트라이크" + balls + "볼");
+        }
+
+        if (strikes == 0 && balls == 0) {
+            System.out.println("낫싱");
+        }
     }
 }
