@@ -1,19 +1,15 @@
 package baseball;
 
-public class Application {
+import static baseball.Game.selectGameStart;
 
-    private int[] inputNums = new int[3];
+public class Application {
 
     public static void main(String[] args) {
         //TODO: 숫자 야구 게임 구현
-        Player player = new Player();
-        Answer answer = new Answer();
+        boolean restart;
 
-        int[] answers = answer.createAnswer();
-
-        while (true) {
-            int[] inputs = player.inputNumber();
-            answer.compareAnswerCorrect(answers, inputs);
-        }
+        do {
+            Game.playGame();
+        } while (selectGameStart() == 1);
     }
 }

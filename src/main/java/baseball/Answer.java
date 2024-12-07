@@ -13,6 +13,8 @@ public class Answer {
      * 4. 출력
      */
     private int[] answerArr = new int[3];
+    private static final int STRIKE_INDEX = 0;
+    private static final int BALL_INDEX = 1;
 
     private int createRandomOneDigit() {
         return Randoms.pickNumberInRange(1, 9);
@@ -28,6 +30,7 @@ public class Answer {
     }
 
     public int[] createAnswer() {
+        answerArr = new int[3];
         int i = 0;
         while (i < 3) {
             int randomOneDigit = createRandomOneDigit();
@@ -38,52 +41,62 @@ public class Answer {
         }
 
         System.out.println(Arrays.toString(answerArr));
-        return answerArr;
+        return answerArr; // [4,5,6]
     }
 
-    public void compareAnswerCorrect(int[] answerArr, int[] playerInputNumber) {
-        int[] ballCount = new int[2];
-        for (int i = 0; i < answerArr.length; i++) {
-            ballCount = isStrikeOrBall(answerArr[i], i, playerInputNumber, ballCount);
+    public void compareAnswerCorrect(int[] playerInputNumber, int[] answerNumber) {
+        while (true) {
+            int[] ballCount = new int[2];
+            for (int i = 0; i < answerNumber.length; i++) {
+                ballCount = isStrikeOrBall(answerNumber[i], i, playerInputNumber, ballCount);
+            }
+
+            printBallCount(ballCount);
+
+            if (ballCount[STRIKE_INDEX] == 3) {
+                break;
+            }
+
+            playerInputNumber = Player.inputNumber();
         }
-
-        printBallCount(ballCount);
+        gameOver();
     }
 
-    private int[] isStrikeOrBall(int answerNum, int index, int[] playerInputNumbers , int[] ballCount) {
-        int strikes = ballCount[0];
-        int balls = ballCount[1];
+    private int[] isStrikeOrBall(int answerNum, int index, int[] playerInputNumbers, int[] ballCount) {
+
         for (int j = 0; j < playerInputNumbers.length; j++) {
             if (answerNum == playerInputNumbers[j] && index == j) {
-                strikes++;
+                ballCount[STRIKE_INDEX]++;
             }
 
             if (answerNum == playerInputNumbers[j] && index != j) {
-                balls++;
+                ballCount[BALL_INDEX]++;
             }
         }
 
-        return new int[]{strikes, balls};
+        return new int[]{ballCount[STRIKE_INDEX], ballCount[BALL_INDEX]};
     }
 
     private void printBallCount(int[] ballCount) {
-        int strikes = ballCount[0];
-        int balls = ballCount[1];
 
-        if (strikes > 0 && balls == 0) {
-            System.out.println(strikes + "스트라이크");
+        if (ballCount[STRIKE_INDEX] > 0 && ballCount[BALL_INDEX] == 0) {
+            System.out.println(ballCount[STRIKE_INDEX] + "스트라이크");
         }
 
-        if (strikes == 0 && balls > 0) {
-            System.out.println(balls + "볼");
+        if (ballCount[STRIKE_INDEX] == 0 && ballCount[BALL_INDEX] > 0) {
+            System.out.println(ballCount[BALL_INDEX] + "볼");
         }
 
-        if (strikes > 0 && balls > 0) {
-            System.out.println(strikes + "스트라이크" + balls + "볼");
+        if (ballCount[STRIKE_INDEX] > 0 && ballCount[BALL_INDEX] > 0) {
+            System.out.println(ballCount[BALL_INDEX] + "볼 " + ballCount[STRIKE_INDEX] + "스트라이크");
         }
 
-        if (strikes == 0 && balls == 0) {
+        if (ballCount[STRIKE_INDEX] == 0 && ballCount[BALL_INDEX] == 0) {
             System.out.println("낫싱");
         }
+    }
+
+    private void gameOver() {
+        System.out.println("3개의 숫자를 모두 맞히셨습니다! 게임 종료");
     }
 }
